@@ -45,3 +45,8 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# chillbot
+token.txt
+chillbot_discordAPI.log
+chillbot_logfile.log
