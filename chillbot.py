@@ -79,7 +79,8 @@ async def on_ready():
   print('---------')
   print('Chillbot Loaded.')
   print('---------')
-  print('To invite to your server use https://discordapp.com/api/oauth2/authorize?client_id=' + client.user.id + '&scope=bot&permissions=0')
+  print('To invite to your server use')
+  print('https://discordapp.com/api/oauth2/authorize?client_id=' + client.user.id + '&scope=bot&permissions=0')
 
 #event on message.
 @client.event
@@ -100,7 +101,7 @@ async def on_message(message):
       if 'http://' in message.content:
        try:
           await client.delete_message(message)
-          await client.send_message(message.channel, linkmsg)
+          await response(message, linkmsg)
           logger.debug("Deleted a link!")
           logger3.debug("Deleted a link!")
        except Exception as e:
@@ -110,7 +111,7 @@ async def on_message(message):
       if 'https://' in message.content:
        try:
           await client.delete_message(message)
-          await client.send_message(message.channel, linkmsg)
+          await response(message, linkmsg)
           logger.debug("Deleted a link!")
           logger3.debug("Deleted a link!")
        except Exception as e:
@@ -121,7 +122,7 @@ async def on_message(message):
     if user_isbot(message):
       try:
        await client.delete_message(message)
-       await client.send_message(message.channel, botmsg)
+       await response(message, botmsg)
        logger.debug("Deleted a bot response!")
        logger3.debug("Deleted a bot response!")
       except Exception as e:
@@ -142,8 +143,11 @@ async def on_message(message):
 @client.event
 async def on_member_join(member):
   server = member.server
-  welcomemsg = '{0.mention}, welcome to the Chillspot! Be sure to have fun! http://i.imgur.com/RRoLbQh.png'.format(member)
-  await client.send_message(server, welcomemsg)
+  welcomemsg = '{0.name}, welcome to the Chillspot! Be sure to have fun!'.format(member)
+  em = discord.Embed(title='', description=welcomemsg, colour=0x7ED6DE)
+  em.set_author(name=member.name, icon_url=member.avatar_url)
+  await client.send_message(server, embed=em)
+  await client.send_file(server, 'welcomebanner.png')
   welcomemsgdebug = '{0.name} joined the server.'.format(member)
   logger.debug(welcomemsgdebug)
   logger3.debug(welcomemsgdebug)
@@ -153,7 +157,9 @@ async def on_member_join(member):
 async def on_member_remove(member):
   server = member.server
   leavemsg = '{0.name} has left the server.'.format(member)
-  await client.send_message(server, leavemsg)
+  em = discord.Embed(title='', description=leavemsg, colour=0xF41400)
+  em.set_author(name=member.name, icon_url=member.avatar_url)
+  await client.send_message(server, embed=em)
   leavemsgdebug = '{0.name} left the server.'.format(member)
   logger.debug(leavemsgdebug)
   logger3.debug(leavemsgdebug)
@@ -191,47 +197,47 @@ async def parse_commands(message):
     if 'c!riot on' in message.content:
        if riotmode == False:
          riotmode = True
-         await client.send_message(message.channel, "Riot Mode has been enabled due to drama. Please listen to the server administration.")
+         await response(message, "Riot Mode has been enabled due to drama. Please listen to the server administration.")
          logger.debug("Enabled riot mode!")
          logger3.debug("Enabled riot mode!")
          
     if 'c!riot off' in message.content:
       if riotmode == True:
          riotmode = False
-         await client.send_message(message.channel, "Riot Mode has been disabled.")
+         await response(message, "Riot Mode has been disabled.")
          logger.debug("Disabled riot mode!")
          logger3.debug("Disabled riot mode!")
      
     if 'c!deletelinks on' in message.content:
       if deletelinksmode == False:
          deletelinksmode = True
-         await client.send_message(message.channel, "Link Deleting Mode has been enabled.")
+         await response(message, "Link Deleting Mode has been enabled.")
          logger.debug("Enabled link deleting mode!")
          logger3.debug("Enabled link deleting mode!")
      
     if 'c!deletelinks off' in message.content:
       if deletelinksmode == True:
          deletelinksmode = False
-         await client.send_message(message.channel, "Link Deleting Mode has been disabled.")
+         await response(message, "Link Deleting Mode has been disabled.")
          logger.debug("Disabled link deleting mode!")
          logger3.debug("Disabled link deleting mode!")
      
     if 'c!deletebots on' in message.content:
       if deletebotsmode == False:
          deletebotsmode = True
-         await client.send_message(message.channel, "Bot Response Deleting Mode has been enabled.")
+         await response(message, "Bot Response Deleting Mode has been enabled.")
          logger.debug("Enabled bot response deleting mode!")
          logger3.debug("Enabled bot response deleting mode!")
      
     if 'c!deletebots off' in message.content:
       if deletebotsmode == True:
          deletebotsmode = False
-         await client.send_message(message.channel, "Bot Response Deleting Mode has been enabled.")
+         await response(message, "Bot Response Deleting Mode has been enabled.")
          logger.debug("Disabled bot response deleting mode!")
          logger3.debug("Disabled bot response deleting mode!")
 
     if 'c!help' in message.content:
-      await client.send_message(message.channel, "Commands (Admin Only) - c!riot <on/off>, c!deletelinks <on/off>, c!deletebots <on/off>, c!help")
+      await response(message, "Commands (Admin Only) - c!riot <on/off>, c!deletelinks <on/off>, c!deletebots <on/off>, c!help")
      
 #these two are for checking the role whitelist.
 def user_notadmin_role(message):
@@ -255,6 +261,11 @@ def user_admin_role(message):
      notadminmsg = 'User {0.author.name} is not on the role whitelist!'.format(message)
      logger3.debug(notadminmsg)
      return False
+	 
+async def response(message, content):
+  em = discord.Embed(title='CHILLBOT', description=content, colour=0x7ED6DE)
+  em.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+  await client.send_message(message.channel, embed=em)
 
 print('Connecting...')
 logger3.debug("Chillbot Connecting...")
