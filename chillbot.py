@@ -144,7 +144,7 @@ async def on_message(message):
 async def on_member_join(member):
   server = member.server
   welcomemsg = '{0.name}, welcome to the Chillspot! Be sure to have fun!'.format(member)
-  em = discord.Embed(title='', description=welcomemsg, colour=0x7ED6DE)
+  em = discord.Embed(title='Welcome!', description=welcomemsg, colour=0x7ED6DE)
   em.set_author(name=member.name, icon_url=member.avatar_url)
   await client.send_message(server, embed=em)
   await client.send_file(server, 'welcomebanner.png')
@@ -157,7 +157,7 @@ async def on_member_join(member):
 async def on_member_remove(member):
   server = member.server
   leavemsg = '{0.name} has left the server.'.format(member)
-  em = discord.Embed(title='', description=leavemsg, colour=0xF41400)
+  em = discord.Embed(title='Bye!', description=leavemsg, colour=0xF41400)
   em.set_author(name=member.name, icon_url=member.avatar_url)
   await client.send_message(server, embed=em)
   leavemsgdebug = '{0.name} left the server.'.format(member)
@@ -263,7 +263,7 @@ def user_admin_role(message):
      return False
 	 
 async def response(message, content):
-  em = discord.Embed(title='CHILLBOT', description=content, colour=0x7ED6DE)
+  em = discord.Embed(title='Chillbot Message', description=content, colour=0x7ED6DE)
   em.set_author(name=client.user.name, icon_url=client.user.avatar_url)
   await client.send_message(message.channel, embed=em)
 
