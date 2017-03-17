@@ -33,7 +33,7 @@ client = discord.Client()
 whitelist = ["226441820467494914", "159985870458322944", "185476724627210241", "109338686889476096", "115385224119975941", "172002275412279296"]
 botlist = ["185476724627210241", "172002275412279296"]
 #when you add commands, also add it along with its arguments here.
-commlist = ["c!riot <on/off>", "c!deletelinks <on/off>", "c!deletebots <on/off>", "c!help"]
+commlist = ["c!riot <on/off>", "c!deletelinks <on/off>", "c!deletebots <on/off>", "c!deleteads <on/off>", "c!help"]
 #role whitelist for the commands themselves.
 role_whitelist = ["254725867056398349", "266385101871513610", "254725919627935744", "288107558349307906"]
 
@@ -41,6 +41,7 @@ role_whitelist = ["254725867056398349", "266385101871513610", "25472591962793574
 riotmode = False
 deletelinksmode = False
 deletebotsmode = False
+antiadvertising = True
         
 #ready event.
 @client.event
@@ -76,6 +77,10 @@ async def on_ready():
     print('Delete Bot Responses: Enabled')
   else:
     print('Delete Bot Responses: Disabled')
+  if antiadvertising == True:
+    print('Delete Server Advertisements: Enabled')
+  else:
+    print('Delete Server Advertisements: Disabled')
   print('---------')
   print('Chillbot Loaded.')
   print('---------')
@@ -101,6 +106,7 @@ async def message_event_func(message):
   #format messages
   linkmsg = '{0.author.mention}, please post links in #media_dump.'.format(message)
   botmsg = '{0.author.mention}, please post bot commands in #bot_summon.'.format(message)
+  admsg = '{0.author.mention}, please dont promote other servers here.'.format(message)
   #parse the commands.
   await parse_commands(message)
   
@@ -147,6 +153,29 @@ async def message_event_func(message):
       except Exception as e:
        logger.debug("Failed to delete unnecessary drama!")
        logger3.debug("Failed to delete unnecessary drama!")
+
+  if antiadvertising == True:
+    if user_notadmin(message):
+      if 'https://discord.gg/' in message.content:
+        try:
+         await client.delete_message(message)
+         await response(message, admsg)
+         logger.debug("Deleted server advertisement!")
+         logger3.debug("Deleted server advertisement!")
+        except Exception as e:
+         logger.debug("Failed to delete server advertisement!")
+         logger3.debug("Failed to delete server advertisement!")
+		 
+      if 'https://discordapp.com/invite/' in message.content:
+        try:
+         await client.delete_message(message)
+         await response(message, admsg)
+         logger.debug("Deleted server advertisement!")
+         logger3.debug("Deleted server advertisement!")
+        except Exception as e:
+         logger.debug("Failed to delete server advertisement!")
+         logger3.debug("Failed to delete server advertisement!")
+    
 	 
 #on user join event
 @client.event
@@ -201,6 +230,7 @@ async def parse_commands(message):
   global riotmode
   global deletelinksmode
   global deletebotsmode
+  global antiadvertising
   
   if user_admin_role(message):
     if 'c!riot on' in message.content:
@@ -241,12 +271,26 @@ async def parse_commands(message):
     if 'c!deletebots off' in message.content:
       if deletebotsmode == True:
          deletebotsmode = False
-         await response(message, "Bot Response Deleting Mode has been enabled.")
+         await response(message, "Bot Response Deleting Mode has been disabled.")
          logger.debug("Disabled bot response deleting mode!")
          logger3.debug("Disabled bot response deleting mode!")
+		 
+    if 'c!deleteads on' in message.content:
+      if antiadvertising == False:
+         antiadvertising = True
+         await response(message, "Server Advertisement Deleting Mode has been enabled.")
+         logger.debug("Enabled server advertisement deleting mode!")
+         logger3.debug("Enabled server advertisement deleting mode!")
+     
+    if 'c!deleteads off' in message.content:
+      if antiadvertising == True:
+         antiadvertising = False
+         await response(message, "Server Advertisement Deleting Mode has been disabled.")
+         logger.debug("Disabled server advertisement deleting mode!")
+         logger3.debug("Disabled server advertisement deleting mode!")
 
     if 'c!help' in message.content:
-      await response(message, "Commands (Admin Only) - c!riot <on/off>, c!deletelinks <on/off>, c!deletebots <on/off>, c!help")
+      await response(message, "Commands (Admin Only) - c!riot <on/off>, c!deletelinks <on/off>, c!deletebots <on/off>, c!deleteads <on/off>, c!help")
      
 #these two are for checking the role whitelist.
 def user_notadmin_role(message):
