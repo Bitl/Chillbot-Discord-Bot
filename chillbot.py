@@ -85,6 +85,15 @@ async def on_ready():
 #event on message.
 @client.event
 async def on_message(message):
+  await message_event_func(message)
+  
+#event on message edit.
+@client.event
+async def on_message_edit(before, after):
+  await message_event_func(after)
+
+#message fucntion
+async def message_event_func(message):
   #make sure we don't mention ourselves.
   if message.author == client.user:
     return
@@ -138,7 +147,7 @@ async def on_message(message):
       except Exception as e:
        logger.debug("Failed to delete unnecessary drama!")
        logger3.debug("Failed to delete unnecessary drama!")
-     
+	 
 #on user join event
 @client.event
 async def on_member_join(member):
