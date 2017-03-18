@@ -268,7 +268,7 @@ async def message_event_func(message):
 @bot.event
 async def on_member_join(member):
   server = member.server
-  welcomemsg = '{0.name}, welcome to the Chillspot! Be sure to have fun!'.format(member)
+  welcomemsg = '{0.mention}, welcome to the Chillspot! Be sure to have fun!'.format(member)
   em = discord.Embed(title='Welcome!', description=welcomemsg, colour=0x7ED6DE)
   em.set_author(name=member.name, icon_url=member.avatar_url)
   await bot.send_message(server, embed=em)
