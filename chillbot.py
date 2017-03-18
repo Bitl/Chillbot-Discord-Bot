@@ -64,6 +64,7 @@ class VoiceState:
             em = discord.Embed(title='Server Message', description=content, colour=0x7ED6DE)
             em.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
             await self.bot.send_message(self.current.channel, embed=em)
+            await self.bot.change_presence(game=discord.Game(name=str(self.current)))
             self.current.player.start()
             await self.play_next_song.wait()
 
@@ -164,16 +165,6 @@ async def on_ready():
   print('---------')
   print('To invite to your server use')
   print('https://discordapp.com/api/oauth2/authorize?client_id=' + bot.user.id + '&scope=bot&permissions=0')
-  
-async def change_game():
-  await bot.wait_until_ready()
-  while not bot.is_closed:
-      chosen_game = random.choice(game_list)
-      logger.debug("Now Playing:")
-      logger.debug(chosen_game)
-      await bot.change_presence(game=discord.Game(name=chosen_game))
-      #hourly updates.
-      await asyncio.sleep(3600)
 
 #event on message.
 @bot.event
@@ -446,23 +437,23 @@ async def deleteads_off(ctx):
 	   
 @bot.command(pass_context=True, no_pm=True)
 async def avatar(ctx, url=None):
-  """Mods - Changes the bot's avatar."""
+  """Mods - Changes the bot's avatar. Must be an attachment."""
   message = ctx.message
   
-  if message.attachments:
-     thing = message.attachments[0]['url']
-  else:
-     await response(message, "Please upload your avatar in a attachment.")
-     return
+  if user_admin_role(message):
+     if message.attachments:
+        thing = message.attachments[0]['url']
+     else:
+        await response(message, "Please upload your avatar in a attachment.")
+        return
 
-  try:
-     with aiohttp.Timeout(10):
-      async with aiosession.get(thing) as res:
-        await bot.edit_profile(avatar=await res.read())
-        await response(message, "Avatar Changed.")
-
-  except Exception as e:
-     await response(message, "Unable to change avatar.")
+     try:
+        with aiohttp.Timeout(10):
+         async with aiosession.get(thing) as res:
+           await bot.edit_profile(avatar=await res.read())
+           await response(message, "Avatar Changed.")
+     except Exception as e:
+        await response(message, "Unable to change avatar.")
      
 #these two are for checking the role whitelist.
 def user_notadmin_role(message):
@@ -628,6 +619,10 @@ async def stop(ctx):
      state.audio_player.cancel()
      del voice_states[server.id]
      await state.voice.disconnect()
+     chosen_game = random.choice(game_list)
+     logger.debug("Now Playing:")
+     logger.debug(chosen_game)
+     await bot.change_presence(game=discord.Game(name=chosen_game))
   except:
      pass
 
@@ -676,7 +671,6 @@ async def response(message, content):
 print('Connecting...')
 logger3.debug("Chillbot Connecting...")
 try:
- bot.loop.create_task(change_game())
  file = open('token.txt', 'r') 
  bot.run(file.readline())
  logger3.debug("Chillbot Connected!")
