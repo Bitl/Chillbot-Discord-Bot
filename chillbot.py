@@ -4,6 +4,7 @@ from discord.ext import commands
 import asyncio
 import logging
 import random
+import aiohttp
 
 if not discord.opus.is_loaded():
     # the 'opus' library here is opus.dll on windows
@@ -90,6 +91,7 @@ logger3.debug("Chillbot Loading...")
 
 #init bot
 bot = commands.Bot(command_prefix=commands.when_mentioned_or('c!'), description="Basic Discord bot for Chaos' Chillspot server.")
+aiosession = aiohttp.ClientSession(loop=bot.loop)
 
 #these first 2 arrays show a whitelist for users to post links, and a bot list for deleting replies made by bots.
 whitelist = ["226441820467494914", "159985870458322944", "185476724627210241", "109338686889476096", "115385224119975941", "172002275412279296"]
@@ -261,7 +263,6 @@ async def message_event_func(message):
          logger3.debug("Failed to delete server advertisement!")
 		 
   await bot.process_commands(message)
-    
 	 
 #on user join event
 @bot.event
@@ -451,7 +452,8 @@ async def avatar(ctx, url=None):
   if message.attachments:
      thing = message.attachments[0]['url']
   else:
-     thing = url.strip('<>')
+     await response(message, "Please upload your avatar in a attachment.")
+     return
 
   try:
      with aiohttp.Timeout(10):
