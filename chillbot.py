@@ -60,6 +60,7 @@ class VoiceState:
         while True:
             self.play_next_song.clear()
             self.current = await self.songs.get()
+			await self.bot.send_typing(self.current.channel)
             content = 'Now playing ' + str(self.current)
             em = discord.Embed(title='Server Message', description=content, colour=0x7ED6DE)
             em.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
@@ -259,6 +260,7 @@ async def message_event_func(message):
 @bot.event
 async def on_member_join(member):
   server = member.server
+  await bot.send_typing(server)
   welcomemsg = '{0.mention}, welcome to the Chillspot! Be sure to have fun!'.format(member)
   em = discord.Embed(title='Welcome!', description=welcomemsg, colour=0x7ED6DE)
   em.set_author(name=member.name, icon_url=member.avatar_url)
@@ -271,6 +273,7 @@ async def on_member_join(member):
 @bot.event
 async def on_member_remove(member):
   server = member.server
+  await bot.send_typing(server)
   leavemsg = '{0.name} has left the server.'.format(member)
   em = discord.Embed(title='Bye!', description=leavemsg, colour=0xF41400)
   em.set_author(name=member.name, icon_url=member.avatar_url)
@@ -663,6 +666,7 @@ async def playing(ctx):
      await response(message, 'Now playing {} [skips: {}/3]'.format(state.current, skip_count))
 	 
 async def response(message, content):
+  await bot.send_typing(message.channel)
   em = discord.Embed(title='Server Message', description=content, colour=0x7ED6DE)
   em.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
   await bot.send_message(message.channel, embed=em)
