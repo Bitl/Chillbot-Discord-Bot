@@ -60,7 +60,7 @@ class VoiceState:
         while True:
             self.play_next_song.clear()
             self.current = await self.songs.get()
-			await self.bot.send_typing(self.current.channel)
+            await self.bot.send_typing(self.current.channel)
             content = 'Now playing ' + str(self.current)
             em = discord.Embed(title='Server Message', description=content, colour=0x7ED6DE)
             em.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
@@ -98,8 +98,6 @@ aiosession = aiohttp.ClientSession(loop=bot.loop)
 #these first 2 arrays show a whitelist for users to post links, and a bot list for deleting replies made by bots.
 whitelist = ["226441820467494914", "159985870458322944", "185476724627210241", "109338686889476096", "115385224119975941", "172002275412279296"]
 botlist = ["185476724627210241", "172002275412279296"]
-#when you add commands, also add it along with its arguments here.
-commlist = ["c!riot <on/off>", "c!deletelinks <on/off>", "c!deletebots <on/off>", "c!deleteads <on/off>", "c!help"]
 #role whitelist for the commands themselves.
 role_whitelist = ["254725867056398349", "266385101871513610", "254725919627935744", "288107558349307906"]
 
@@ -108,7 +106,8 @@ game_list = ["Team Fortress 2", "Garry's Mod", "Portal", "Portal 2", "Left 4 Dea
 "BioShock Infinite", "BioShock", "BioShock 2", "Killing Floor", "Killing Floor 2", "Borderlands", "Borderlands 2", "Fallout 3", "Fallout New Vegas", "Fallout 4", "DOOM", 
 "Wolfenstein: The New Order", "Wolfenstein: The Old Blood", "The Ultimate DOOM", "DOOM II", "Final DOOM", "Quake", "Quake II", "Quake III Arena", "Wolfenstein 3D",
 "Quake Live", "Synergy", "Terraria", "Minecraft", "ROBLOX", "Spore", "System Shock 2", "Duke Nukem 3D", "POSTAL 2", "Shadow Warrior", "Shadow Warrior 2", "Shadow Warrior Classic",
-"Counter-Strike", "Counter-Strike Source", "Serious Sam: The First Encounter", "Serious Sam: The Second Encounter", "Serious Sam 3: BFE"]
+"Counter-Strike", "Counter-Strike Source", "Serious Sam: The First Encounter", "Serious Sam: The Second Encounter", "Serious Sam 3: BFE", "Pong", "Tetris", "Super Mario Bros.",
+"Pac-Man", "Mrs. Pac-Man", "Sonic the Hedgehog"]
 
 voice_states = {}
 
@@ -134,9 +133,6 @@ async def on_ready():
   print('---------')
   print('Role Whitelist (as Role IDs):')
   print(role_whitelist)
-  print('---------')
-  print('Command List:')
-  print(commlist)
   print('---------')
   print('Modes enabled:')
   print('---------')
