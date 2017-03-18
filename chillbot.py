@@ -100,6 +100,7 @@ whitelist = ["226441820467494914", "159985870458322944", "185476724627210241", "
 botlist = ["185476724627210241", "172002275412279296"]
 #role whitelist for the commands themselves.
 role_whitelist = ["254725867056398349", "266385101871513610", "254725919627935744", "288107558349307906"]
+owner_list = ["184013824850919425"]
 
 #game list. for fun.
 game_list = ["Team Fortress 2", "Garry's Mod", "Portal", "Portal 2", "Left 4 Dead", "Left 4 Dead 2", "Half-Life 2", "Half-Life", "Counter-Strike: Global Offensive", 
@@ -436,10 +437,10 @@ async def deleteads_off(ctx):
 	   
 @bot.command(pass_context=True, no_pm=True)
 async def avatar(ctx, url=None):
-  """Mods - Changes the bot's avatar. Must be an attachment."""
+  """Mods - Changes the bot's avatar. Must be an attachment. (Bot Owners Only)"""
   message = ctx.message
   
-  if user_admin_role(message):
+  if user_owner(message):
      if message.attachments:
         thing = message.attachments[0]['url']
      else:
@@ -453,6 +454,15 @@ async def avatar(ctx, url=None):
            await response(message, "Avatar Changed.")
      except Exception as e:
         await response(message, "Unable to change avatar.")
+		
+@bot.command(pass_context=True, no_pm=True)
+async def msg(ctx, *, msgstr=None):
+  """Mods - Sends a message to a specific channel. (Bot Owners Only)"""
+  message = ctx.message
+  
+  if user_owner(message):
+     channel = discord.Object(id='254715477593423891')
+     await bot.send_message(channel, msgstr)
      
 #these two are for checking the role whitelist.
 def user_notadmin_role(message):
@@ -475,6 +485,17 @@ def user_admin_role(message):
   else:
      notadminmsg = 'User {0.author.name} is not on the role whitelist!'.format(message)
      logger3.debug(notadminmsg)
+     return False
+	 
+def user_owner(message):
+  author = message.author
+  if author.id in str(owner_list):
+     ownermsg = 'User {0.author.name} is on the ownerlist!'.format(message)
+     logger3.debug(ownermsg)
+     return True
+  else:
+     notownermsg = 'User {0.author.name} is not on the ownerlist!'.format(message)
+     logger3.debug(notownermsg)
      return False
 	 
 def get_voice_state(server):
@@ -500,10 +521,10 @@ def __unload():
        pass
 	   
 @bot.command(pass_context=True, no_pm=True)
-async def join(ctx, *, channel : discord.Channel):
+async def join(ctx, *, channel=None):
   """Music - Joins a voice channel."""
   message = ctx.message
-  if ctx.args is None:
+  if channel is None:
      await response(message, "Help: c!join <voice channel>")
      return
   
@@ -534,7 +555,7 @@ async def summon(ctx):
   return True
 
 @bot.command(pass_context=True, no_pm=True)
-async def play(ctx, *, song : str):
+async def play(ctx, *, song=None):
   """Music - Plays a song.
   If there is a song currently in the queue, then it is
   queued until the next song is done playing.
@@ -543,7 +564,7 @@ async def play(ctx, *, song : str):
   https://rg3.github.io/youtube-dl/supportedsites.html
   """
   message = ctx.message
-  if ctx.args is None:
+  if song is None:
      await response(message, "Help: c!play <YouTube URL>")
      return
 	 
@@ -570,10 +591,10 @@ async def play(ctx, *, song : str):
      await state.songs.put(entry)
 
 @bot.command(pass_context=True, no_pm=True)
-async def volume(ctx, value : int):
+async def volume(ctx, value=None):
   """Music - Sets the volume of the currently playing song."""
   message = ctx.message
-  if ctx.args is None:
+  if value is None:
      await response(message, "Help: c!volume <volume amount>")
      return
 	 
@@ -672,7 +693,15 @@ print('Connecting...')
 logger3.debug("Chillbot Connecting...")
 try:
  file = open('token.txt', 'r') 
- bot.run(file.readline())
+ try:
+  bot.loop.run_until_complete(bot.start(file.readline()))
+ except KeyboardInterrupt:
+  bot.loop.run_until_complete(bot.logout())
+ finally:
+  bot.loop.close()
+ file.close()
  logger3.debug("Chillbot Connected!")
 except Exception as e:
  logger3.debug("Chillbot failed to connect with Discord!")
+except:
+ bot.logout()
