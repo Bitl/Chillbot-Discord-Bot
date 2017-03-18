@@ -1,3 +1,4 @@
 discord.py ~= 0.16.5
 pip
+youtube_dl
 cffi==1.6.0; sys_platform == 'win32'
