@@ -65,7 +65,6 @@ class VoiceState:
             em = discord.Embed(title='Server Message', description=content, colour=0x7ED6DE)
             em.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
             await self.bot.send_message(self.current.channel, embed=em)
-            await self.bot.change_presence(game=discord.Game(name=str(self.current)))
             self.current.player.start()
             await self.play_next_song.wait()
 
@@ -645,11 +644,7 @@ async def clear(ctx):
      player.stop()
 
   try:
-     state.audio_player.cancel()
-     chosen_game = random.choice(game_list)
-     logger.debug("Now Playing:")
-     logger.debug(chosen_game)
-     await bot.change_presence(game=discord.Game(name=chosen_game))
+     await state.songs.clear(entry)
   except:
      pass
 
@@ -684,7 +679,7 @@ async def np(ctx):
   """Music - Shows info about the currently played song."""
   message = ctx.message
   state = get_voice_state(ctx.message.server)
-  if state.current is None:
+  if not state.is_playing():
      await response(message, 'Not playing anything.')
   else:
      skip_count = len(state.skip_votes)
