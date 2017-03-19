@@ -162,15 +162,12 @@ async def on_ready():
   
 async def change_game():
   await bot.wait_until_ready()
-  server = discord.Object(id="254715477593423891")
-  state = get_voice_state(server)
   while not bot.is_closed:
-   if not state.is_playing():
-      chosen_game = random.choice(game_list)
-      logger.debug("Now Playing:")
-      logger.debug(chosen_game)
-      await bot.change_presence(game=discord.Game(name=chosen_game))
-      await asyncio.sleep(1800)
+    chosen_game = random.choice(game_list)
+    logger.debug("Now Playing:")
+    logger.debug(chosen_game)
+    await bot.change_presence(game=discord.Game(name=chosen_game))
+    await asyncio.sleep(1800)
 
 #event on message.
 @bot.event
