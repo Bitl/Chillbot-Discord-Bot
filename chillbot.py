@@ -92,7 +92,7 @@ print('Chillbot Loading...')
 logger3.debug("Chillbot Loading...")
 
 #init bot
-bot = commands.Bot(command_prefix=commands.when_mentioned_or('c!'), description="Basic Discord bot for Chaos' Chillspot server.")
+bot = commands.Bot(command_prefix="c!", description="Basic Discord bot for Chaos' Chillspot server.")
 aiosession = aiohttp.ClientSession(loop=bot.loop)
 
 #these first 2 arrays show a whitelist for users to post links, and a bot list for deleting replies made by bots.
@@ -574,7 +574,7 @@ async def play(ctx, *, song=None):
   """
   message = ctx.message
   if song is None:
-     await response(message, "Help: c!play <YouTube URL>")
+     await response(message, "Help: c!play <YouTube URL or search term>")
      return
 	 
   state = get_voice_state(ctx.message.server)
@@ -597,6 +597,8 @@ async def play(ctx, *, song=None):
      player.volume = 0.6
      entry = VoiceEntry(ctx.message, player)
      await response(message, 'Enqueued ' + str(entry))
+     if state.is_playing():
+         await response(message, "To play your song, you must wait for the song playing to finish or use c!skip.")
      await state.songs.put(entry)
 
 @bot.command(pass_context=True, no_pm=True)
@@ -633,10 +635,8 @@ async def resume(ctx):
      player.resume()
 
 @bot.command(pass_context=True, no_pm=True)
-async def stop(ctx):
-  """Music - Stops playing audio and leaves the voice channel.
-  This also clears the queue.
-  """
+async def clear(ctx):
+  """Music - Stops playing audio and clears the queue."""
   server = ctx.message.server
   state = get_voice_state(server)
 
@@ -646,8 +646,6 @@ async def stop(ctx):
 
   try:
      state.audio_player.cancel()
-     del voice_states[server.id]
-     await state.voice.disconnect()
      chosen_game = random.choice(game_list)
      logger.debug("Now Playing:")
      logger.debug(chosen_game)
@@ -682,7 +680,7 @@ async def skip(ctx):
        await response(message, 'You have already voted to skip this song.')
 
 @bot.command(pass_context=True, no_pm=True)
-async def playing(ctx):
+async def np(ctx):
   """Music - Shows info about the currently played song."""
   message = ctx.message
   state = get_voice_state(ctx.message.server)
