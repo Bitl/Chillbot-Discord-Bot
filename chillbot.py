@@ -156,13 +156,22 @@ async def on_ready():
   print('---------')
   print('Chillbot Loaded.')
   print('---------')
-  chosen_game = random.choice(game_list)
-  print('Now Playing:')
-  print(chosen_game)
-  await bot.change_presence(game=discord.Game(name=chosen_game))
-  print('---------')
   print('To invite to your server use')
   print('https://discordapp.com/api/oauth2/authorize?client_id=' + bot.user.id + '&scope=bot&permissions=0')
+  print('---------')
+  bot.loop.create_task(change_game())
+  
+async def change_game():
+  await bot.wait_until_ready()
+  server = discord.Object(id="254715477593423891")
+  state = get_voice_state(server)
+  while not bot.is_closed:
+   if not state.is_playing():
+      chosen_game = random.choice(game_list)
+      logger.debug("Now Playing:")
+      logger.debug(chosen_game)
+      await bot.change_presence(game=discord.Game(name=chosen_game))
+      await asyncio.sleep(1800)
 
 #event on message.
 @bot.event
@@ -693,12 +702,7 @@ print('Connecting...')
 logger3.debug("Chillbot Connecting...")
 try:
  file = open('token.txt', 'r') 
- try:
-  bot.loop.run_until_complete(bot.start(file.readline()))
- except KeyboardInterrupt:
-  bot.loop.run_until_complete(bot.logout())
- finally:
-  bot.loop.close()
+ bot.run(file.readline())
  file.close()
  logger3.debug("Chillbot Connected!")
 except Exception as e:
