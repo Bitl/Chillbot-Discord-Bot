@@ -5,6 +5,7 @@ import asyncio
 import logging
 import random
 import aiohttp
+from time import localtime, strftime
 
 if not discord.opus.is_loaded():
     # the 'opus' library here is opus.dll on windows
@@ -100,6 +101,8 @@ botlist = ["185476724627210241", "172002275412279296"]
 #role whitelist for the commands themselves.
 role_whitelist = ["254725867056398349", "266385101871513610", "254725919627935744", "288107558349307906"]
 owner_list = ["184013824850919425"]
+#logs
+logging_channel = "293846128968073216"
 
 #game list. for fun.
 game_list = ["Team Fortress 2", "Garry's Mod", "Portal", "Portal 2", "Left 4 Dead", "Left 4 Dead 2", "Half-Life 2", "Half-Life", "Counter-Strike: Global Offensive", 
@@ -178,12 +181,50 @@ async def on_message(message):
 @bot.event
 async def on_message_edit(before, after):
   await message_event_func(after)
+  
+  if before.content == after.content:
+     return
+  if before.author == bot.user:
+     return
+  
+  member = before.author
+  channel = discord.Object(id=logging_channel)
+  leavemsgdebug = '[{0.content}] -> [{1.content}]'.format(before, after)
+  msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
+  usermsg = "{0} <{1}> ({2}) | {3}".format(member, member.id, before.channel.name, msgtime).replace("'", "")
+  em = discord.Embed(title='Message Edited', description=leavemsgdebug, colour=0xF46900)
+  em.set_author(name=usermsg, icon_url=member.avatar_url)
+  await bot.send_message(channel, embed=em)
+
+#event on message edit.
+@bot.event
+async def on_message_delete(message):
+  if message.author == bot.user:
+     return
+  
+  member = message.author
+  channel = discord.Object(id=logging_channel)
+  deletmsgdebug = '[{0.content}]'.format(message)
+  msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
+  usermsg = "{0} <{1}> ({2}) | {3}".format(member, member.id, message.channel.name, msgtime).replace("'", "")
+  em = discord.Embed(title='Message Deleted', description=deletmsgdebug, colour=0xF41400)
+  em.set_author(name=usermsg, icon_url=member.avatar_url)
+  await bot.send_message(channel, embed=em)
 
 #message fucntion
 async def message_event_func(message):
   #make sure we don't mention ourselves.
   if message.author == bot.user:
     return
+	
+  member = message.author
+  channel = discord.Object(id=logging_channel)
+  msgsenddebug = '[{0.content}]'.format(message)
+  msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
+  usermsg = "{0} <{1}> ({2}) | {3}".format(member, member.id, message.channel.name, msgtime).replace("'", "")
+  em = discord.Embed(title='Message', description=msgsenddebug, colour=0x7ED6DE)
+  em.set_author(name=usermsg, icon_url=member.avatar_url)
+  await bot.send_message(channel, embed=em)
 
   #format messages
   linkmsg = '{0.author.mention}, please post links in #media_dump.'.format(message)
@@ -268,7 +309,13 @@ async def on_member_join(member):
   em.set_author(name=member.name, icon_url=member.avatar_url)
   await bot.send_message(server, embed=em)
   await bot.send_file(server, 'welcomebanner.png')
+  channel = discord.Object(id=logging_channel)
   welcomemsgdebug = '{0.name} joined the server.'.format(member)
+  msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
+  usermsg = "{0} <{1}> | {2}".format(member, member.id, msgtime).replace("'", "")
+  em = discord.Embed(title='Member Joined', description=welcomemsgdebug, colour=0x7ED6DE)
+  em.set_author(name=usermsg, icon_url=member.avatar_url)
+  await bot.send_message(channel, embed=em)
   logger.debug(welcomemsgdebug)
   logger3.debug(welcomemsgdebug)
 
@@ -281,7 +328,13 @@ async def on_member_remove(member):
   em = discord.Embed(title='Bye!', description=leavemsg, colour=0xF41400)
   em.set_author(name=member.name, icon_url=member.avatar_url)
   await bot.send_message(server, embed=em)
+  channel = discord.Object(id=logging_channel)
   leavemsgdebug = '{0.name} left the server.'.format(member)
+  msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
+  usermsg = "{0} <{1}> | {2}".format(member, member.id, msgtime).replace("'", "")
+  em = discord.Embed(title='Member Left', description=leavemsgdebug, colour=0xF41400)
+  em.set_author(name=usermsg, icon_url=member.avatar_url)
+  await bot.send_message(channel, embed=em)
   logger.debug(leavemsgdebug)
   logger3.debug(leavemsgdebug)
      
