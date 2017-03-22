@@ -196,7 +196,7 @@ async def on_message_edit(before, after):
   em.set_author(name=usermsg, icon_url=member.avatar_url)
   await bot.send_message(channel, embed=em)
 
-#event on message edit.
+#event on message delete.
 @bot.event
 async def on_message_delete(message):
   if message.author == bot.user:
@@ -216,15 +216,6 @@ async def message_event_func(message):
   #make sure we don't mention ourselves.
   if message.author == bot.user:
     return
-	
-  member = message.author
-  channel = discord.Object(id=logging_channel)
-  msgsenddebug = '[{0.content}]'.format(message)
-  msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
-  usermsg = "{0} <{1}> ({2}) | {3}".format(member, member.id, message.channel.name, msgtime).replace("'", "")
-  em = discord.Embed(title='Message', description=msgsenddebug, colour=0x7ED6DE)
-  em.set_author(name=usermsg, icon_url=member.avatar_url)
-  await bot.send_message(channel, embed=em)
 
   #format messages
   linkmsg = '{0.author.mention}, please post links in #media_dump.'.format(message)
