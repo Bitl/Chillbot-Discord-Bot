@@ -673,28 +673,6 @@ async def volume(ctx, value=None):
          player.volume = value / 100
          await response(message, 'Set the volume to {:.0%}'.format(player.volume))
 
-@bot.command(pass_context=True, no_pm=True)
-async def clear(ctx):
-  """Music - Stops playing audio and clears the queue. (Mod Only)"""
-  message = ctx.message
-  
-  if user_admin_role(message):
-     server = message.server
-     state = get_voice_state(server)
-     
-     if message.channel.id != bot_summon_id:
-         await response(message, 'You cannot use this command outside of #bot_summon.')
-         return
-
-     if state.is_playing():
-         player = state.player
-         player.stop()
-
-     try:
-         await state.songs.clear(entry)
-     except:
-         pass
-     
 @bot.command(pass_context=True, aliases=['disconnect'], no_pm=True)
 async def stop(ctx):
   """Music - Stops playing audio and disconnects from the voice channel. (Mod Only)"""
@@ -713,7 +691,6 @@ async def stop(ctx):
          player.stop()
 
      try:
-         await state.songs.clear(entry)
          state.audio_player.cancel()
          del self.voice_states[server.id]
          await state.voice.disconnect()
