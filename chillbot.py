@@ -102,7 +102,10 @@ botlist = ["185476724627210241", "172002275412279296"]
 role_whitelist = ["254725867056398349", "266385101871513610", "254725919627935744", "288107558349307906"]
 owner_list = ["184013824850919425"]
 #logs
-logging_channel = "293846128968073216"
+logging_channel_general = "294994191489171467"
+logging_channel_joins_leaves = "294994789361909761"
+logging_channel_deleted = "294994109028892673"
+logging_channel_edited = "294994142600232961"
 
 #game list. for fun.
 game_list = ["Team Fortress 2", "Garry's Mod", "Portal", "Portal 2", "Left 4 Dead", "Left 4 Dead 2", "Half-Life 2", "Half-Life", "Counter-Strike: Global Offensive", 
@@ -188,7 +191,7 @@ async def on_message_edit(before, after):
      return
   
   member = before.author
-  channel = discord.Object(id=logging_channel)
+  channel = discord.Object(id=logging_channel_edited)
   leavemsgdebug = '[{0.content}] -> [{1.content}]'.format(before, after)
   msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
   usermsg = "{0} <{1}> ({2}) | {3}".format(member, member.id, before.channel.name, msgtime).replace("'", "")
@@ -203,7 +206,7 @@ async def on_message_delete(message):
      return
   
   member = message.author
-  channel = discord.Object(id=logging_channel)
+  channel = discord.Object(id=logging_channel_deleted)
   deletmsgdebug = '[{0.content}]'.format(message)
   msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
   usermsg = "{0} <{1}> ({2}) | {3}".format(member, member.id, message.channel.name, msgtime).replace("'", "")
@@ -216,6 +219,16 @@ async def message_event_func(message):
   #make sure we don't mention ourselves.
   if message.author == bot.user:
     return
+	
+  #log messages
+  member = message.author
+  channel = discord.Object(id=logging_channel_general)
+  normalmsgdebug = '[{0.content}]'.format(message)
+  msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
+  usermsg = "{0} <{1}> ({2}) | {3}".format(member, member.id, message.channel.name, msgtime).replace("'", "")
+  em = discord.Embed(title='Message Deleted', description=normalmsgdebug, colour=0x7ED6DE)
+  em.set_author(name=usermsg, icon_url=member.avatar_url)
+  await bot.send_message(channel, embed=em)
 
   #format messages
   linkmsg = '{0.author.mention}, please post links in #media_dump.'.format(message)
@@ -300,7 +313,7 @@ async def on_member_join(member):
   em.set_author(name=member.name, icon_url=member.avatar_url)
   await bot.send_message(server, embed=em)
   await bot.send_file(server, 'welcomebanner.png')
-  channel = discord.Object(id=logging_channel)
+  channel = discord.Object(id=logging_channel_joins_leaves)
   welcomemsgdebug = '{0.name} joined the server.'.format(member)
   msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
   usermsg = "{0} <{1}> | {2}".format(member, member.id, msgtime).replace("'", "")
@@ -319,7 +332,7 @@ async def on_member_remove(member):
   em = discord.Embed(title='Bye!', description=leavemsg, colour=0xF41400)
   em.set_author(name=member.name, icon_url=member.avatar_url)
   await bot.send_message(server, embed=em)
-  channel = discord.Object(id=logging_channel)
+  channel = discord.Object(id=logging_channel_joins_leaves)
   leavemsgdebug = '{0.name} left the server.'.format(member)
   msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
   usermsg = "{0} <{1}> | {2}".format(member, member.id, msgtime).replace("'", "")
