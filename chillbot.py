@@ -107,13 +107,16 @@ logging_channel_joins_leaves = "294994789361909761"
 logging_channel_deleted = "294994109028892673"
 logging_channel_edited = "294994142600232961"
 
+bot_summon_id = '263005905157619734'
+
 #game list. for fun.
 game_list = ["Team Fortress 2", "Garry's Mod", "Portal", "Portal 2", "Left 4 Dead", "Left 4 Dead 2", "Half-Life 2", "Half-Life", "Counter-Strike: Global Offensive", 
 "BioShock Infinite", "BioShock", "BioShock 2", "Killing Floor", "Killing Floor 2", "Borderlands", "Borderlands 2", "Fallout 3", "Fallout New Vegas", "Fallout 4", "DOOM", 
 "Wolfenstein: The New Order", "Wolfenstein: The Old Blood", "The Ultimate DOOM", "DOOM II", "Final DOOM", "Quake", "Quake II", "Quake III Arena", "Wolfenstein 3D",
 "Quake Live", "Synergy", "Terraria", "Minecraft", "ROBLOX", "Spore", "System Shock 2", "Duke Nukem 3D", "POSTAL 2", "Shadow Warrior", "Shadow Warrior 2", "Shadow Warrior Classic",
 "Counter-Strike", "Counter-Strike Source", "Serious Sam: The First Encounter", "Serious Sam: The Second Encounter", "Serious Sam 3: BFE", "Pong", "Tetris", "Super Mario Bros.",
-"Pac-Man", "Mrs. Pac-Man", "Sonic the Hedgehog"]
+"Pac-Man", "Mrs. Pac-Man", "Sonic the Hedgehog", "Reflex Arena", "Overwatch", "League Of Legends", "Dota 2", "Halo Combat Evolved", "Halo Custom Edition", "halo Online", 
+"ElDewrito", "Team Fortress 2 Classic", "Synergy", "FIREFIGHT RELOADED", "Unreal Tournament", "GZDOOM", "ZDOOM", "GLQuake", "WinQuake", "Spacewar!"]
 
 voice_states = {}
 
@@ -219,7 +222,7 @@ async def message_event_func(message):
   #make sure we don't mention ourselves.
   if message.author == bot.user:
     return
-	
+    
   #log messages
   member = message.author
   channel = discord.Object(id=logging_channel_general)
@@ -268,7 +271,7 @@ async def message_event_func(message):
       except Exception as e:
        logger.debug("Failed to delete a bot response!")
        logger3.debug("Failed to delete a bot response!")
-	   
+       
   if riotmode == True:
     if user_notadmin_role(message):
       try:
@@ -290,7 +293,7 @@ async def message_event_func(message):
         except Exception as e:
          logger.debug("Failed to delete server advertisement!")
          logger3.debug("Failed to delete server advertisement!")
-		 
+         
       if 'https://discordapp.com/invite/' in message.content:
         try:
          await bot.delete_message(message)
@@ -300,9 +303,9 @@ async def message_event_func(message):
         except Exception as e:
          logger.debug("Failed to delete server advertisement!")
          logger3.debug("Failed to delete server advertisement!")
-		 
+         
   await bot.process_commands(message)
-	 
+     
 #on user join event
 @bot.event
 async def on_member_join(member):
@@ -364,7 +367,7 @@ def user_isbot(message):
      notbotmsg = 'User {0.author.name} is not on the botlist!'.format(message)
      logger3.debug(notbotmsg)
      return False
-	  
+      
 @bot.group(pass_context=True, no_pm=True)
 async def riot(ctx):
   """Mods - Mutes all users except for administration"""
@@ -385,7 +388,7 @@ async def riot_on(ctx):
        await response(message, "Riot Mode has been enabled due to drama. Please listen to the server administration.")
        logger.debug("Enabled riot mode!")
        logger3.debug("Enabled riot mode!")
-	
+    
 @riot.command(name='off', pass_context=True, no_pm=True)
 async def riot_off(ctx):
   global riotmode
@@ -397,7 +400,7 @@ async def riot_off(ctx):
        await response(message, "Riot Mode has been disabled.")
        logger.debug("Disabled riot mode!")
        logger3.debug("Disabled riot mode!")
-	 
+     
 @bot.group(pass_context=True, no_pm=True)
 async def deletelinks(ctx):
   """Mods - Deletes links from all users except for those in the whitelist"""
@@ -418,7 +421,7 @@ async def deletelinks_on(ctx):
        await response(message, "Link Deleting Mode has been enabled.")
        logger.debug("Enabled link deleting mode!")
        logger3.debug("Enabled link deleting mode!")
-	
+    
 @deletelinks.command(name='off', pass_context=True, no_pm=True)
 async def deletelinks_off(ctx):
   global deletelinksmode
@@ -451,7 +454,7 @@ async def deletebots_on(ctx):
        await response(message, "Bot Response Deleting Mode has been enabled.")
        logger.debug("Enabled Bot Response deleting mode!")
        logger3.debug("Enabled Bot Response deleting mode!")
-	
+    
 @deletebots.command(name='off', pass_context=True, no_pm=True)
 async def deletebots_off(ctx):
   global deletebotsmode
@@ -463,7 +466,7 @@ async def deletebots_off(ctx):
        await response(message, "Bot Response Deleting Mode has been disabled.")
        logger.debug("Disabled Bot Response deleting mode!")
        logger3.debug("Disabled Bot Response deleting mode!")
-	   
+       
 @bot.group(pass_context=True, no_pm=True)
 async def deleteads(ctx):
   """Mods - Deletes server advertisements from all users except whitelisted"""
@@ -484,7 +487,7 @@ async def deleteads_on(ctx):
        await response(message, "Server Advertisement Deleting Mode has been enabled.")
        logger.debug("Enabled server advertisement deleting mode!")
        logger3.debug("Enabled server advertisement deleting mode!")
-	
+    
 @deleteads.command(name='off', pass_context=True, no_pm=True)
 async def deleteads_off(ctx):
   global antiadvertising
@@ -496,7 +499,7 @@ async def deleteads_off(ctx):
        await response(message, "Server Advertisement Deleting Mode has been disabled.")
        logger.debug("Disabled server advertisement deleting mode!")
        logger3.debug("Disabled server advertisement deleting mode!")
-	   
+       
 @bot.command(pass_context=True, no_pm=True)
 async def avatar(ctx, url=None):
   """Mods - Changes the bot's avatar. Must be an attachment. (Bot Owners Only)"""
@@ -516,7 +519,7 @@ async def avatar(ctx, url=None):
            await response(message, "Avatar Changed.")
      except Exception as e:
         await response(message, "Unable to change avatar.")
-		
+        
 @bot.command(pass_context=True, no_pm=True)
 async def msg(ctx, *, msgstr=None):
   """Mods - Sends a message to a specific channel. (Bot Owners Only)"""
@@ -548,7 +551,7 @@ def user_admin_role(message):
      notadminmsg = 'User {0.author.name} is not on the role whitelist!'.format(message)
      logger3.debug(notadminmsg)
      return False
-	 
+     
 def user_owner(message):
   author = message.author
   if author.id in str(owner_list):
@@ -559,7 +562,7 @@ def user_owner(message):
      notownermsg = 'User {0.author.name} is not on the ownerlist!'.format(message)
      logger3.debug(notownermsg)
      return False
-	 
+     
 def get_voice_state(server):
   state = voice_states.get(server.id)
   if state is None:
@@ -581,40 +584,31 @@ def __unload():
          bot.loop.create_task(state.voice.disconnect())
      except:
        pass
-	   
-@bot.command(pass_context=True, no_pm=True)
-async def join(ctx, *, channel=None):
-  """Music - Joins a voice channel."""
-  message = ctx.message
-  if channel is None:
-     await response(message, "Help: c!join <voice channel>")
-     return
-  
-  try:
-     await create_voice_client(channel)
-  except discord.ClientException:
-     await response(message, 'Already in a voice channel...')
-  except discord.InvalidArgument:
-     await response(message, 'This is not a voice channel...')
-  else:
-     await response(message, 'Ready to play audio in ' + channel.name)
 
-@bot.command(pass_context=True, no_pm=True)
+@bot.command(pass_context=True, aliases=['join'], no_pm=True)
 async def summon(ctx):
-  """Music - Summons the bot to join your voice channel."""
-  summoned_channel = ctx.message.author.voice_channel
+  """Music - Summons the bot to join your voice channel. (Mod Only)"""
   message = ctx.message
-  if summoned_channel is None:
-     await response(message, 'You are not in a voice channel.')
-     return False
+  
+  if user_admin_role(message):
+     if message.channel.id != bot_summon_id:
+         await response(message, 'You cannot use this command outside of #bot_summon.')
+         return False
+     
+     summoned_channel = ctx.message.author.voice_channel
+     if summoned_channel is None:
+         await response(message, 'You are not in a voice channel.')
+         return False
 
-  state = get_voice_state(ctx.message.server)
-  if state.voice is None:
-     state.voice = await bot.join_voice_channel(summoned_channel)
+     state = get_voice_state(ctx.message.server)
+     if state.voice is None:
+         state.voice = await bot.join_voice_channel(summoned_channel)
+     else:
+         await state.voice.move_to(summoned_channel)
+
+     return True
   else:
-     await state.voice.move_to(summoned_channel)
-
-  return True
+     return False
 
 @bot.command(pass_context=True, no_pm=True)
 async def play(ctx, *, song=None):
@@ -626,10 +620,15 @@ async def play(ctx, *, song=None):
   https://rg3.github.io/youtube-dl/supportedsites.html
   """
   message = ctx.message
+  
+  if message.channel.id != bot_summon_id:
+     await response(message, 'You cannot use this command outside of #bot_summon.')
+     return
+  
   if song is None:
      await response(message, "Help: c!play <YouTube URL or search term>")
      return
-	 
+     
   state = get_voice_state(ctx.message.server)
   opts = {
      'default_search': 'auto',
@@ -656,51 +655,70 @@ async def play(ctx, *, song=None):
 
 @bot.command(pass_context=True, no_pm=True)
 async def volume(ctx, value=None):
-  """Music - Sets the volume of the currently playing song."""
+  """Music - Sets the volume of the currently playing song. (Mod Only)"""
   message = ctx.message
-  if value is None:
-     await response(message, "Help: c!volume <volume amount>")
-     return
-	 
-  state = get_voice_state(ctx.message.server)
-  if state.is_playing():
-     player = state.player
-     player.volume = value / 100
-     await response(message, 'Set the volume to {:.0%}'.format(player.volume))
-
-@bot.command(pass_context=True, no_pm=True)
-async def pause(ctx):
-  """Music - Pauses the currently played song."""
   
-  message = ctx.message
-  state = get_voice_state(ctx.message.server)
-  if state.is_playing():
-     player = state.player
-     player.pause()
-
-@bot.command(pass_context=True, no_pm=True)
-async def resume(ctx):
-  """Music - Resumes the currently played song."""
-  message = ctx.message
-  state = get_voice_state(ctx.message.server)
-  if state.is_playing():
-     player = state.player
-     player.resume()
+  if user_admin_role(message):
+     if message.channel.id != bot_summon_id:
+         await response(message, 'You cannot use this command outside of #bot_summon.')
+         return
+     
+     if value is None:
+         await response(message, "Help: c!volume <volume amount>")
+         return
+     
+     state = get_voice_state(ctx.message.server)
+     if state.is_playing():
+         player = state.player
+         player.volume = value / 100
+         await response(message, 'Set the volume to {:.0%}'.format(player.volume))
 
 @bot.command(pass_context=True, no_pm=True)
 async def clear(ctx):
-  """Music - Stops playing audio and clears the queue."""
-  server = ctx.message.server
-  state = get_voice_state(server)
+  """Music - Stops playing audio and clears the queue. (Mod Only)"""
+  message = ctx.message
+  
+  if user_admin_role(message):
+     server = message.server
+     state = get_voice_state(server)
+     
+     if message.channel.id != bot_summon_id:
+         await response(message, 'You cannot use this command outside of #bot_summon.')
+         return
 
-  if state.is_playing():
-     player = state.player
-     player.stop()
+     if state.is_playing():
+         player = state.player
+         player.stop()
 
-  try:
-     await state.songs.clear(entry)
-  except:
-     pass
+     try:
+         await state.songs.clear(entry)
+     except:
+         pass
+     
+@bot.command(pass_context=True, aliases=['disconnect'], no_pm=True)
+async def stop(ctx):
+  """Music - Stops playing audio and disconnects from the voice channel. (Mod Only)"""
+  message = ctx.message
+  
+  if user_admin_role(message):
+     server = message.server
+     state = get_voice_state(server)
+     
+     if message.channel.id != bot_summon_id:
+         await response(message, 'You cannot use this command outside of #bot_summon.')
+         return
+
+     if state.is_playing():
+         player = state.player
+         player.stop()
+
+     try:
+         await state.songs.clear(entry)
+         state.audio_player.cancel()
+         del self.voice_states[server.id]
+         await state.voice.disconnect()
+     except:
+         pass
 
 @bot.command(pass_context=True, no_pm=True)
 async def skip(ctx):
@@ -709,6 +727,11 @@ async def skip(ctx):
   """
   message = ctx.message
   state = get_voice_state(ctx.message.server)
+  
+  if message.channel.id != bot_summon_id:
+     await response(message, 'You cannot use this command outside of #bot_summon.')
+     return
+  
   if not state.is_playing():
      await response(message, 'Not playing any music right now...')
      return
@@ -728,17 +751,22 @@ async def skip(ctx):
   else:
        await response(message, 'You have already voted to skip this song.')
 
-@bot.command(pass_context=True, no_pm=True)
+@bot.command(pass_context=True, aliases=['playing'], no_pm=True)
 async def np(ctx):
   """Music - Shows info about the currently played song."""
   message = ctx.message
   state = get_voice_state(ctx.message.server)
+  
+  if message.channel.id != bot_summon_id:
+     await response(message, 'You cannot use this command outside of #bot_summon.')
+     return
+  
   if not state.is_playing():
      await response(message, 'Not playing anything.')
   else:
      skip_count = len(state.skip_votes)
      await response(message, 'Now playing {} [skips: {}/3]'.format(state.current, skip_count))
-	 
+     
 async def response(message, content):
   await bot.send_typing(message.channel)
   em = discord.Embed(title='Server Message', description=content, colour=0x7ED6DE)
