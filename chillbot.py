@@ -6,6 +6,7 @@ import logging
 import random
 import aiohttp
 from time import localtime, strftime
+from datetime import date
 
 if not discord.opus.is_loaded():
     # the 'opus' library here is opus.dll on windows
@@ -115,7 +116,7 @@ game_list = ["Team Fortress 2", "Garry's Mod", "Portal", "Portal 2", "Left 4 Dea
 "Wolfenstein: The New Order", "Wolfenstein: The Old Blood", "The Ultimate DOOM", "DOOM II", "Final DOOM", "Quake", "Quake II", "Quake III Arena", "Wolfenstein 3D",
 "Quake Live", "Synergy", "Terraria", "Minecraft", "ROBLOX", "Spore", "System Shock 2", "Duke Nukem 3D", "POSTAL 2", "Shadow Warrior", "Shadow Warrior 2", "Shadow Warrior Classic",
 "Counter-Strike", "Counter-Strike Source", "Serious Sam: The First Encounter", "Serious Sam: The Second Encounter", "Serious Sam 3: BFE", "Pong", "Tetris", "Super Mario Bros.",
-"Pac-Man", "Mrs. Pac-Man", "Sonic the Hedgehog", "Reflex Arena", "Overwatch", "League Of Legends", "Dota 2", "Halo Combat Evolved", "Halo Custom Edition", "halo Online", 
+"Pac-Man", "Mrs. Pac-Man", "Sonic the Hedgehog", "Reflex Arena", "Overwatch", "League Of Legends", "Dota 2", "Halo Combat Evolved", "Halo Custom Edition", "Halo Online", 
 "ElDewrito", "Team Fortress 2 Classic", "Synergy", "FIREFIGHT RELOADED", "Unreal Tournament", "GZDOOM", "ZDOOM", "GLQuake", "WinQuake", "Spacewar!"]
 
 voice_states = {}
@@ -303,6 +304,21 @@ async def message_event_func(message):
         except Exception as e:
          logger.debug("Failed to delete server advertisement!")
          logger3.debug("Failed to delete server advertisement!")
+		 
+  pongmsg = '{0.author.mention} Pong!'.format(message)
+  
+  today = date.today()
+  tom_foolery = date(today.year, 4, 1)
+  
+  if today == tom_foolery:
+     if 'ping' in message.content:
+         try:
+          await response(message, pongmsg)
+          logger.debug("Pong!")
+          logger3.debug("Pong!")
+         except Exception as e:
+          logger.debug("Pluck!")
+          logger3.debug("Pluck!")
          
   await bot.process_commands(message)
      
@@ -747,7 +763,7 @@ async def np(ctx):
 async def response(message, content):
   await bot.send_typing(message.channel)
   em = discord.Embed(title='Server Message', description=content, colour=0x7ED6DE)
-  em.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
+  em.set_author(name=bot.user.display_name, icon_url=bot.user.avatar_url)
   await bot.send_message(message.channel, embed=em)
 
 print('Connecting...')
