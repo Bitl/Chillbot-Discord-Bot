@@ -101,7 +101,7 @@ whitelist = ["226441820467494914", "159985870458322944", "185476724627210241", "
 botlist = ["185476724627210241", "172002275412279296"]
 #role whitelist for the commands themselves.
 role_whitelist = ["254725867056398349", "266385101871513610", "254725919627935744", "288107558349307906"]
-owner_list = ["184013824850919425"]
+owner_list = ["184013824850919425", "226441820467494914"]
 #logs
 logging_channel_general = "294994191489171467"
 logging_channel_joins_leaves = "294994789361909761"
@@ -126,6 +126,10 @@ riotmode = False
 deletelinksmode = False
 deletebotsmode = False
 antiadvertising = True
+
+#april fools recode.
+today = date.today()
+tom_foolery = date(today.year, 4, 1)
         
 #ready event.
 @bot.event
@@ -304,21 +308,6 @@ async def message_event_func(message):
         except Exception as e:
          logger.debug("Failed to delete server advertisement!")
          logger3.debug("Failed to delete server advertisement!")
-		 
-  pongmsg = '{0.author.mention} Pong!'.format(message)
-  
-  today = date.today()
-  tom_foolery = date(today.year, 4, 1)
-  
-  if today == tom_foolery:
-     if 'ping' in message.content:
-         try:
-          await response(message, pongmsg)
-          logger.debug("Pong!")
-          logger3.debug("Pong!")
-         except Exception as e:
-          logger.debug("Pluck!")
-          logger3.debug("Pluck!")
          
   await bot.process_commands(message)
      
@@ -328,7 +317,11 @@ async def on_member_join(member):
   server = member.server
   await bot.send_typing(server)
   welcomemsg = '{0.mention}, welcome to the Chillspot! Be sure to have fun!'.format(member)
-  em = discord.Embed(title='Welcome!', description=welcomemsg, colour=0x7ED6DE)
+  welcomemsg_gangsta = 'Yo {0.mention}, welcome ta tha Chillspot son! Be shizzle ta have fun!'.format(member)
+  if today == tom_foolery:
+     em = discord.Embed(title='Yo, welcome!', description=welcomemsg_gangsta, colour=0x7ED6DE)
+  else:
+     em = discord.Embed(title='Welcome!', description=welcomemsg, colour=0x7ED6DE)
   em.set_author(name=member.name, icon_url=member.avatar_url)
   await bot.send_message(server, embed=em)
   await bot.send_file(server, 'welcomebanner.png')
@@ -348,7 +341,11 @@ async def on_member_remove(member):
   server = member.server
   await bot.send_typing(server)
   leavemsg = '{0.name} has left the server.'.format(member)
-  em = discord.Embed(title='Bye!', description=leavemsg, colour=0xF41400)
+  leavemsg_gangsta = 'Yo homies, {0.name} has left tha serva.'.format(member)
+  if today == tom_foolery:
+     em = discord.Embed(title='See ya dawg!', description=leavemsg_gangsta, colour=0xF41400)
+  else:
+     em = discord.Embed(title='Bye!', description=leavemsg, colour=0xF41400)
   em.set_author(name=member.name, icon_url=member.avatar_url)
   await bot.send_message(server, embed=em)
   channel = discord.Object(id=logging_channel_joins_leaves)
@@ -762,7 +759,10 @@ async def np(ctx):
      
 async def response(message, content):
   await bot.send_typing(message.channel)
-  em = discord.Embed(title='Server Message', description=content, colour=0x7ED6DE)
+  if today == tom_foolery:
+     em = discord.Embed(title='Yo fucka, heres a serva message', description=content, colour=0x7ED6DE)
+  else:
+     em = discord.Embed(title='Server Message', description=content, colour=0x7ED6DE)
   em.set_author(name=bot.user.display_name, icon_url=bot.user.avatar_url)
   await bot.send_message(message.channel, embed=em)
 
