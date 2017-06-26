@@ -7,6 +7,7 @@ import random
 import aiohttp
 from time import localtime, strftime
 from datetime import date
+import json
 
 #logger for the internal console, the discordAPI, and chillbot itself.
 logger = logging.getLogger('chillbot_console')
@@ -39,14 +40,14 @@ whitelist = ["226441820467494914", "159985870458322944", "185476724627210241", "
 botlist = ["185476724627210241", "172002275412279296"]
 #role whitelist for the commands themselves.
 role_whitelist = ["311918364886827008", "311888772646174721", "311889124544217098", "311918312814673922"]
-owner_list = ["184013824850919425", "226441820467494914", "140806844053454848"]
+owner_list = ["184013824850919425", "226441820467494914"]
 #logs
 logging_channel_general = "294994191489171467"
 logging_channel_joins_leaves = "294994789361909761"
 logging_channel_deleted = "294994109028892673"
 logging_channel_edited = "294994142600232961"
 
-bot_summon_id = '263005905157619734'
+bot_summon_id = '315533031718912002'
 
 #game list. for fun.
 game_list = ["Team Fortress 2", "Garry's Mod", "Portal", "Portal 2", "Left 4 Dead", "Left 4 Dead 2", "Half-Life 2", "Half-Life", "Counter-Strike: Global Offensive", 
@@ -57,13 +58,44 @@ game_list = ["Team Fortress 2", "Garry's Mod", "Portal", "Portal 2", "Left 4 Dea
 "Pac-Man", "Mrs. Pac-Man", "Sonic the Hedgehog", "Reflex Arena", "Overwatch", "League Of Legends", "Dota 2", "Halo Combat Evolved", "Halo Custom Edition", "Halo Online", 
 "ElDewrito", "Team Fortress 2 Classic", "Synergy", "FIREFIGHT RELOADED", "Unreal Tournament", "GZDOOM", "ZDOOM", "GLQuake", "WinQuake", "Spacewar!"]
 
-voice_states = {}
+config = {}
+
+with open('config.json') as json_config_file:
+     config = json.load(json_config_file)
 
 #global vars.
 riotmode = False
 deletelinksmode = False
 deletebotsmode = False
-antiadvertising = True
+antiadvertising = False
+
+riotmode_config = config["riotmode"]
+
+if riotmode_config == "True":
+     riotmode = True
+else:
+     riotmode = False
+	 
+deletelinksmode_config = config["deletelinksmode"]
+
+if deletelinksmode_config == "True":
+     deletelinksmode = True
+else:
+     deletelinksmode = False
+	 
+deletebotsmode_config = config["deletebotsmode"]
+
+if deletebotsmode_config == "True":
+     deletebotsmode = True
+else:
+     deletebotsmode = False
+	 
+antiadvertising_config = config["antiadvertising"]
+
+if antiadvertising_config == "True":
+     antiadvertising = True
+else:
+     antiadvertising = False
 
 #april fools recode.
 today = date.today()
