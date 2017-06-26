@@ -2,5 +2,8 @@
 	"riotmode": "False",
 	"deletelinksmode": "False",
 	"deletebotsmode": "True",
-	"antiadvertising": "True"
+	"antiadvertising": "True",
+	"joinmsgs": "True",
+	"leavemsgs": "True",
+	"logging": "True"
 }

@@ -68,6 +68,8 @@ riotmode = False
 deletelinksmode = False
 deletebotsmode = False
 antiadvertising = False
+joinmsgs = False
+leavemsgs = False
 
 riotmode_config = config["riotmode"]
 
@@ -96,6 +98,27 @@ if antiadvertising_config == "True":
      antiadvertising = True
 else:
      antiadvertising = False
+	 
+joinmsgs_config = config["joinmsgs"]
+
+if joinmsgs_config == "True":
+     joinmsgs = True
+else:
+     joinmsgs = False
+	 
+leavemsgs_config = config["leavemsgs"]
+
+if leavemsgs_config == "True":
+     leavemsgs = True
+else:
+     leavemsgs = False
+	 
+logging_config = config["logging"]
+
+if logging_config == "True":
+     logging = True
+else:
+     logging = False
 
 #april fools recode.
 today = date.today()
@@ -136,6 +159,18 @@ async def on_ready():
     print('Delete Server Advertisements: Enabled')
   else:
     print('Delete Server Advertisements: Disabled')
+  if joinmsgs == True:
+    print('Join Messages: Enabled')
+  else:
+    print('Join Messages: Disabled')
+  if leavemsgs == True:
+    print('Leave Messages: Enabled')
+  else:
+    print('Leave Messages: Disabled')
+  if logging == True:
+    print('Log Messages: Enabled')
+  else:
+    print('Log Messages: Disabled')
   print('---------')
   print('Chillbot Loaded.')
   print('---------')
@@ -167,15 +202,16 @@ async def on_message_edit(before, after):
      return
   if before.author == bot.user:
      return
-  
-  member = before.author
-  channel = discord.Object(id=logging_channel_edited)
-  leavemsgdebug = '[{0.content}] -> [{1.content}]'.format(before, after)
-  msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
-  usermsg = "{0} <{1}> ({2}) | {3}".format(member, member.id, before.channel.name, msgtime).replace("'", "")
-  em = discord.Embed(title='Message Edited', description=leavemsgdebug, colour=0xF46900)
-  em.set_author(name=usermsg, icon_url=member.avatar_url)
-  await bot.send_message(channel, embed=em)
+	 
+  if logging == True:
+     member = before.author
+     channel = discord.Object(id=logging_channel_edited)
+     leavemsgdebug = '[{0.content}] -> [{1.content}]'.format(before, after)
+     msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
+     usermsg = "{0} <{1}> ({2}) | {3}".format(member, member.id, before.channel.name, msgtime).replace("'", "")
+    em = discord.Embed(title='Message Edited', description=leavemsgdebug, colour=0xF46900)
+    em.set_author(name=usermsg, icon_url=member.avatar_url)
+    await bot.send_message(channel, embed=em)
 
 #event on message delete.
 @bot.event
@@ -183,30 +219,32 @@ async def on_message_delete(message):
   if message.author == bot.user:
      return
   
-  member = message.author
-  channel = discord.Object(id=logging_channel_deleted)
-  deletmsgdebug = '[{0.content}]'.format(message)
-  msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
-  usermsg = "{0} <{1}> ({2}) | {3}".format(member, member.id, message.channel.name, msgtime).replace("'", "")
-  em = discord.Embed(title='Message Deleted', description=deletmsgdebug, colour=0xF41400)
-  em.set_author(name=usermsg, icon_url=member.avatar_url)
-  await bot.send_message(channel, embed=em)
+  if logging == True:
+    member = message.author
+    channel = discord.Object(id=logging_channel_deleted)
+    deletmsgdebug = '[{0.content}]'.format(message)
+    msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
+    usermsg = "{0} <{1}> ({2}) | {3}".format(member, member.id, message.channel.name, msgtime).replace("'", "")
+    em = discord.Embed(title='Message Deleted', description=deletmsgdebug, colour=0xF41400)
+    em.set_author(name=usermsg, icon_url=member.avatar_url)
+    await bot.send_message(channel, embed=em)
 
 #message fucntion
 async def message_event_func(message):
   #make sure we don't mention ourselves.
   if message.author == bot.user:
     return
-    
-  #log messages
-  member = message.author
-  channel = discord.Object(id=logging_channel_general)
-  normalmsgdebug = '[{0.content}]'.format(message)
-  msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
-  usermsg = "{0} <{1}> ({2}) | {3}".format(member, member.id, message.channel.name, msgtime).replace("'", "")
-  em = discord.Embed(title='Message', description=normalmsgdebug, colour=0x7ED6DE)
-  em.set_author(name=usermsg, icon_url=member.avatar_url)
-  await bot.send_message(channel, embed=em)
+  
+  if logging == True:
+    #log messages
+    member = message.author
+    channel = discord.Object(id=logging_channel_general)
+    normalmsgdebug = '[{0.content}]'.format(message)
+    msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
+    usermsg = "{0} <{1}> ({2}) | {3}".format(member, member.id, message.channel.name, msgtime).replace("'", "")
+    em = discord.Embed(title='Message', description=normalmsgdebug, colour=0x7ED6DE)
+    em.set_author(name=usermsg, icon_url=member.avatar_url)
+    await bot.send_message(channel, embed=em)
 
   #format messages
   linkmsg = '{0.author.mention}, please post links in #media_dump.'.format(message)
@@ -284,49 +322,51 @@ async def message_event_func(message):
 #on user join event
 @bot.event
 async def on_member_join(member):
-  server = member.server
-  await bot.send_typing(server)
-  welcomemsg = '{0.mention}, welcome to the Chillspot! Be sure to have fun!'.format(member)
-  welcomemsg_gangsta = 'Yo {0.mention}, welcome ta tha Chillspot son! Be shizzle ta have fun!'.format(member)
-  if today == tom_foolery:
-     em = discord.Embed(title='Yo, welcome!', description=welcomemsg_gangsta, colour=0x7ED6DE)
-  else:
-     em = discord.Embed(title='Welcome!', description=welcomemsg, colour=0x7ED6DE)
-  em.set_author(name=member.name, icon_url=member.avatar_url)
-  await bot.send_message(server, embed=em)
-  await bot.send_file(server, 'welcomebanner.png')
-  channel = discord.Object(id=logging_channel_joins_leaves)
-  welcomemsgdebug = '{0.name} joined the server.'.format(member)
-  msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
-  usermsg = "{0} <{1}> | {2}".format(member, member.id, msgtime).replace("'", "")
-  em = discord.Embed(title='Member Joined', description=welcomemsgdebug, colour=0x7ED6DE)
-  em.set_author(name=usermsg, icon_url=member.avatar_url)
-  await bot.send_message(channel, embed=em)
-  logger.debug(welcomemsgdebug)
-  logger3.debug(welcomemsgdebug)
+ if joinmsgs == True:
+   server = member.server
+   await bot.send_typing(server)
+   welcomemsg = '{0.mention}, welcome to the Chillspot! Be sure to have fun!'.format(member)
+   welcomemsg_gangsta = 'Yo {0.mention}, welcome ta tha Chillspot son! Be shizzle ta have fun!'.format(member)
+   if today == tom_foolery:
+      em = discord.Embed(title='Yo, welcome!', description=welcomemsg_gangsta, colour=0x7ED6DE)
+   else:
+      em = discord.Embed(title='Welcome!', description=welcomemsg, colour=0x7ED6DE)
+   em.set_author(name=member.name, icon_url=member.avatar_url)
+   await bot.send_message(server, embed=em)
+   await bot.send_file(server, 'welcomebanner.png')
+   channel = discord.Object(id=logging_channel_joins_leaves)
+   welcomemsgdebug = '{0.name} joined the server.'.format(member)
+   msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
+   usermsg = "{0} <{1}> | {2}".format(member, member.id, msgtime).replace("'", "")
+   em = discord.Embed(title='Member Joined', description=welcomemsgdebug, colour=0x7ED6DE)
+   em.set_author(name=usermsg, icon_url=member.avatar_url)
+   await bot.send_message(channel, embed=em)
+   logger.debug(welcomemsgdebug)
+   logger3.debug(welcomemsgdebug)
 
 #on user leave event
 @bot.event
 async def on_member_remove(member):
-  server = member.server
-  await bot.send_typing(server)
-  leavemsg = '{0.name} has left the server.'.format(member)
-  leavemsg_gangsta = 'Yo homies, {0.name} has left tha serva.'.format(member)
-  if today == tom_foolery:
-     em = discord.Embed(title='See ya dawg!', description=leavemsg_gangsta, colour=0xF41400)
-  else:
-     em = discord.Embed(title='Bye!', description=leavemsg, colour=0xF41400)
-  em.set_author(name=member.name, icon_url=member.avatar_url)
-  await bot.send_message(server, embed=em)
-  channel = discord.Object(id=logging_channel_joins_leaves)
-  leavemsgdebug = '{0.name} left the server.'.format(member)
-  msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
-  usermsg = "{0} <{1}> | {2}".format(member, member.id, msgtime).replace("'", "")
-  em = discord.Embed(title='Member Left', description=leavemsgdebug, colour=0xF41400)
-  em.set_author(name=usermsg, icon_url=member.avatar_url)
-  await bot.send_message(channel, embed=em)
-  logger.debug(leavemsgdebug)
-  logger3.debug(leavemsgdebug)
+ if leavemsgs == True:
+   server = member.server
+   await bot.send_typing(server)
+   leavemsg = '{0.name} has left the server.'.format(member)
+   leavemsg_gangsta = 'Yo homies, {0.name} has left tha serva.'.format(member)
+   if today == tom_foolery:
+      em = discord.Embed(title='See ya dawg!', description=leavemsg_gangsta, colour=0xF41400)
+   else:
+      em = discord.Embed(title='Bye!', description=leavemsg, colour=0xF41400)
+   em.set_author(name=member.name, icon_url=member.avatar_url)
+   await bot.send_message(server, embed=em)
+   channel = discord.Object(id=logging_channel_joins_leaves)
+   leavemsgdebug = '{0.name} left the server.'.format(member)
+   msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
+   usermsg = "{0} <{1}> | {2}".format(member, member.id, msgtime).replace("'", "")
+   em = discord.Embed(title='Member Left', description=leavemsgdebug, colour=0xF41400)
+   em.set_author(name=usermsg, icon_url=member.avatar_url)
+   await bot.send_message(channel, embed=em)
+   logger.debug(leavemsgdebug)
+   logger3.debug(leavemsgdebug)
      
 #these two are for checking the whitelist and blocklist.
 def user_notadmin(message):
