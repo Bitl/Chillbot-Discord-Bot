@@ -5,5 +5,12 @@
 	"antiadvertising": "True",
 	"joinmsgs": "True",
 	"leavemsgs": "True",
-	"logging": "True"
+	"logging": "True",
+	"logging_channel_general": "294994191489171467",
+	"logging_channel_joins_leaves": "294994789361909761",
+	"logging_channel_deleted": "294994109028892673",
+	"logging_channel_edited": "294994142600232961",
+	"bot_summon_id": "315533031718912002",
+	"say_channel": "329313144797265931",
+	"leavelog_channel": "329313144797265931"
 }

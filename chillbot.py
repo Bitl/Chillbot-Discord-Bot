@@ -41,14 +41,6 @@ botlist = ["185476724627210241", "172002275412279296"]
 #role whitelist for the commands themselves.
 role_whitelist = ["311918364886827008", "311888772646174721", "311889124544217098", "311918312814673922"]
 owner_list = ["184013824850919425", "226441820467494914"]
-#logs
-logging_channel_general = "294994191489171467"
-logging_channel_joins_leaves = "294994789361909761"
-logging_channel_deleted = "294994109028892673"
-logging_channel_edited = "294994142600232961"
-
-bot_summon_id = '315533031718912002'
-say_channel = '323212186472415232'
 
 #game list. for fun.
 game_list = ["Team Fortress 2", "Garry's Mod", "Portal", "Portal 2", "Left 4 Dead", "Left 4 Dead 2", "Half-Life 2", "Half-Life", "Counter-Strike: Global Offensive", 
@@ -71,6 +63,8 @@ deletebotsmode = False
 antiadvertising = False
 joinmsgs = False
 leavemsgs = False
+
+
 
 riotmode_config = config["riotmode"]
 
@@ -120,6 +114,15 @@ if logging_config == "True":
         logging = True
 else:
         logging = False
+		
+logging_channel_general = config["logging_channel_general"]
+logging_channel_joins_leaves = config["logging_channel_joins_leaves"]
+logging_channel_deleted = config["logging_channel_deleted"]
+logging_channel_edited = config["logging_channel_edited"]
+
+bot_summon_id = config["bot_summon_id"]
+say_channel = config["say_channel"]
+leavelog_channel = config["leavelog_channel"]
 
 #april fools recode.
 today = date.today()
@@ -324,8 +327,8 @@ async def message_event_func(message):
 @bot.event
 async def on_member_join(member):
  if joinmsgs == True:
-   server = member.server
-   await bot.send_typing(server)
+   channelp = discord.Object(id=say_channel)
+   await bot.send_typing(channelp)
    welcomemsg = '{0.mention}, welcome to the Chillspot! Be sure to have fun!'.format(member)
    welcomemsg_gangsta = 'Yo {0.mention}, welcome ta tha Chillspot son! Be shizzle ta have fun!'.format(member)
    if today == tom_foolery:
@@ -333,8 +336,9 @@ async def on_member_join(member):
    else:
          em = discord.Embed(title='Welcome!', description=welcomemsg, colour=0x7ED6DE)
    em.set_author(name=member.name, icon_url=member.avatar_url)
-   await bot.send_message(server, embed=em)
-   await bot.send_file(server, 'welcomebanner.png')
+   await bot.send_message(channelp, embed=em)
+   await bot.send_file(channelp, 'welcomebanner.png')
+ if logging == True:
    channel = discord.Object(id=logging_channel_joins_leaves)
    welcomemsgdebug = '{0.name} joined the server.'.format(member)
    msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
@@ -349,8 +353,8 @@ async def on_member_join(member):
 @bot.event
 async def on_member_remove(member):
  if leavemsgs == True:
-   server = member.server
-   await bot.send_typing(server)
+   channelp = discord.Object(id=leavelog_channel)
+   await bot.send_typing(channelp)
    leavemsg = '{0.name} has left the server.'.format(member)
    leavemsg_gangsta = 'Yo homies, {0.name} has left tha serva.'.format(member)
    if today == tom_foolery:
@@ -358,7 +362,8 @@ async def on_member_remove(member):
    else:
          em = discord.Embed(title='Bye!', description=leavemsg, colour=0xF41400)
    em.set_author(name=member.name, icon_url=member.avatar_url)
-   await bot.send_message(server, embed=em)
+   await bot.send_message(channelp, embed=em)
+ if logging == True:
    channel = discord.Object(id=logging_channel_joins_leaves)
    leavemsgdebug = '{0.name} left the server.'.format(member)
    msgtime = strftime("%d/%m/%Y [%I:%M:%S %p] (%Z)", localtime())
