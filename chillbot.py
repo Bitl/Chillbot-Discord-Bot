@@ -48,6 +48,7 @@ logging_channel_deleted = "294994109028892673"
 logging_channel_edited = "294994142600232961"
 
 bot_summon_id = '315533031718912002'
+say_channel = '323212186472415232'
 
 #game list. for fun.
 game_list = ["Team Fortress 2", "Garry's Mod", "Portal", "Portal 2", "Left 4 Dead", "Left 4 Dead 2", "Half-Life 2", "Half-Life", "Counter-Strike: Global Offensive", 
@@ -549,7 +550,7 @@ async def msg(ctx, *, msgstr=None):
   message = ctx.message
   
   if user_owner(message):
-        channel = discord.Object(id='254715477593423891')
+        channel = discord.Object(id=say_channel)
         await bot.send_message(channel, msgstr)
         
 #these two are for checking the role whitelist.
