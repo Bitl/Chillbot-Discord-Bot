@@ -42,15 +42,6 @@ botlist = ["185476724627210241", "172002275412279296"]
 role_whitelist = ["311918364886827008", "311888772646174721", "311889124544217098", "311918312814673922"]
 owner_list = ["184013824850919425", "226441820467494914"]
 
-#game list. for fun.
-game_list = ["Team Fortress 2", "Garry's Mod", "Portal", "Portal 2", "Left 4 Dead", "Left 4 Dead 2", "Half-Life 2", "Half-Life", "Counter-Strike: Global Offensive", 
-"BioShock Infinite", "BioShock", "BioShock 2", "Killing Floor", "Killing Floor 2", "Borderlands", "Borderlands 2", "Fallout 3", "Fallout New Vegas", "Fallout 4", "DOOM", 
-"Wolfenstein: The New Order", "Wolfenstein: The Old Blood", "The Ultimate DOOM", "DOOM II", "Final DOOM", "Quake", "Quake II", "Quake III Arena", "Wolfenstein 3D",
-"Quake Live", "Synergy", "Terraria", "Minecraft", "ROBLOX", "Spore", "System Shock 2", "Duke Nukem 3D", "POSTAL 2", "Shadow Warrior", "Shadow Warrior 2", "Shadow Warrior Classic",
-"Counter-Strike", "Counter-Strike Source", "Serious Sam: The First Encounter", "Serious Sam: The Second Encounter", "Serious Sam 3: BFE", "Pong", "Tetris", "Super Mario Bros.",
-"Pac-Man", "Mrs. Pac-Man", "Sonic the Hedgehog", "Reflex Arena", "Overwatch", "League Of Legends", "Dota 2", "Halo Combat Evolved", "Halo Custom Edition", "Halo Online", 
-"ElDewrito", "Team Fortress 2 Classic", "Synergy", "FIREFIGHT RELOADED", "Unreal Tournament", "GZDOOM", "ZDOOM", "GLQuake", "WinQuake", "Spacewar!"]
-
 config = {}
 
 with open('config.json') as json_config_file:
@@ -181,16 +172,7 @@ async def on_ready():
   print('To invite to your server use')
   print('https://discordapp.com/api/oauth2/authorize?client_id=' + bot.user.id + '&scope=bot&permissions=0')
   print('---------')
-  bot.loop.create_task(change_game())
-  
-async def change_game():
-  await bot.wait_until_ready()
-  while not bot.is_closed:
-    chosen_game = random.choice(game_list)
-    logger.debug("Now Playing:")
-    logger.debug(chosen_game)
-    await bot.change_presence(game=discord.Game(name=chosen_game))
-    await asyncio.sleep(1800)
+  await bot.change_presence(game=discord.Game(name="Running at -69 C!"))
 
 #event on message.
 @bot.event
